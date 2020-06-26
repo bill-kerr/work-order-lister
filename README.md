@@ -1,4 +1,4 @@
-##### Work Order Lister
+# Work Order Lister
 
 Work Order Lister generates a summary text file of Trimble Business Center work order directory outputs. Its purpose is to eliminate the need to search each directory for the desired work order material.
 
