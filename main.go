@@ -43,7 +43,7 @@ func getDescription(directory string) string {
 		}
 	}
 
-	return ""
+	return "\n"
 }
 
 func readTextFile(filePath string) string {
