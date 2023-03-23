@@ -8,30 +8,14 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/bill-kerr/work-order-lister/excel"
+	"github.com/bill-kerr/work-order-lister/indexer"
 )
 
 func main() {
-	workOrders := map[string]string{}
-
-	path, _ := filepath.Abs(filepath.Dir(os.Args[0]))
-	files, err := ioutil.ReadDir(path)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	prefixes, err := getPrefixesFromFiles(files)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-
-	for _, f := range files {
-		if hasPrefix(f.Name(), prefixes) && f.IsDir() {
-			description := getDescription(f.Name())
-			workOrders[f.Name()] = description
-		}
-	}
-
-	writeToFile(workOrders)
+	workOrders := indexer.Index()
+	excel.CreateFile(workOrders)
 }
 
 func getPrefixesFromFiles(files []fs.FileInfo) ([]string, error) {
@@ -83,17 +67,17 @@ func readTextFile(filePath string) string {
 }
 
 func getFileContents(file *os.File) string {
-	filebytes, err := ioutil.ReadAll(file)
+	fileBytes, err := ioutil.ReadAll(file)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return parseBytes(filebytes)
+	return parseBytes(fileBytes)
 }
 
-func parseBytes(filebytes []byte) string {
-	description := string(filebytes)
+func parseBytes(fileBytes []byte) string {
+	description := string(fileBytes)
 	description = strings.TrimSuffix(description, "\n")
 	description = strings.Replace(description, "\r\n", ", ", -1)
 	return description
